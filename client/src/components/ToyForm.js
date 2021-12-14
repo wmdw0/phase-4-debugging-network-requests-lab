@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 
 function ToyForm({ onAddToy }) {
+  const [errors, setErrors] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
     image: "",
   });
 
-  function handleChange(event) {
+  function handleChange(e) {
     setFormData({
       ...formData,
-      [event.target.name]: event.target.value,
+      [e.target.name]: e.target.value,
     });
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  function handleSubmit(e) {
+    e.preventDefault();
 
     const newToy = {
       ...formData,
@@ -26,15 +27,20 @@ function ToyForm({ onAddToy }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newToy),
+      body: JSON.stringify(formData),
     })
-      .then((r) => r.json())
-      .then((newToy) => {
-        setFormData({
-          name: "",
-          image: "",
-        });
-        onAddToy(newToy);
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((newToy) => console.log(newToy));
+        } else {
+          response.json().then((errorData) => setErrors(errorData.errors));
+        }
+      // .then((newToy) => {
+      //   setFormData({
+      //     name: "",
+      //     image: "",
+      //   });
+      //   onAddToy(newToy);
       });
   }
 

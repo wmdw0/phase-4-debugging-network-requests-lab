@@ -11,7 +11,9 @@ function App() {
   useEffect(() => {
     fetch("/toys")
       .then((r) => r.json())
-      .then(setToys);
+      .then((toys) => {
+        setToys(toys);
+      });
   }, []);
 
   function handleClick() {
